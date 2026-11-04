@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}VOAD — Roupas masculinas, femininas, unissex e infantis{% endblock %}
+
+{% block content %}
+
+{# carrossel do bootstrap, ocupando a largura toda #}
+<section id="carrosselVoad" class="carousel slide voad-carrossel" data-bs-ride="carousel" aria-label="Destaques da loja">
+    <div class="carousel-indicators">
+        {% for banner in banners %}
+        <button type="button" data-bs-target="#carrosselVoad" data-bs-slide-to="{{ forloop.counter0 }}"
+                {% if forloop.first %}class="active" aria-current="true"{% endif %}
+                aria-label="Slide {{ forloop.counter }}"></button>
+        {% endfor %}
+    </div>
+
+    <div class="carousel-inner">
+        {% for banner in banners %}
+        <div class="carousel-item {% if forloop.first %}active{% endif %}" data-bs-interval="5000">
+            {# a foto vem do admin; sem foto, aparece a textura padrão do css #}
+            {# o picture troca a foto no celular, se existir uma versão em pé #}
+            {% if banner.imagem %}
+            <picture>
+                {% if banner.imagem_celular %}
+                <source media="(max-width: 575.98px)" srcset="{{ banner.imagem_celular.url }}">
+                {% endif %}
+                <img src="{{ banner.imagem.url }}" class="banner-img" alt="{{ banner.titulo }}">
+            </picture>
+            {% endif %}
+
+            {# camada escura e texto só aparecem se o banner tiver título, texto ou botão #}
+            {% if banner.titulo or banner.texto or banner.botao %}
+            <div class="banner-sombra"></div>
+            <div class="container banner-texto">
+                {% if banner.titulo %}<h2>{{ banner.titulo }}</h2>{% endif %}
+                {% if banner.texto %}<p>{{ banner.texto }}</p>{% endif %}
+                {% if banner.botao and banner.link %}
+                <a href="{{ banner.link }}" class="btn btn-voad btn-lg">{{ banner.botao }}</a>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            {# com link e sem botão, a foto inteira vira o link #}
+            {% if banner.link and not banner.botao %}
+            <a href="{{ banner.link }}" class="banner-link" aria-label="Abrir banner"></a>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+
+    <button class="carousel-control-prev" type="button" data-bs-target="#carrosselVoad" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Anterior</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carrosselVoad" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Próximo</span>
+    </button>
+</section>
+
+<section id="promocoes" class="container secao">
+    <h2 class="secao-titulo">Promoções</h2>
+
+    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3 g-lg-4">
+        {# o for cria um card para cada produto que a view enviou #}
+        {% for produto in produtos %}
+        <div class="col">
+            {# o include usa o mesmo arquivo de card em todas as páginas #}
+            {% include "products/produto_card.html" %}
+        </div>
+        {# o empty aparece quando a lista está vazia #}
+        {% empty %}
+        <div class="col-12">
+            <p class="vazio">Nenhum produto em promoção no momento.</p>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

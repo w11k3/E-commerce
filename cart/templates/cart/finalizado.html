@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Pedido confirmado - VOAD{% endblock %}
+
+{% block content %}
+<section class="container secao">
+    <div class="confirmacao">
+        <span class="confirmacao-icone"><i class="bi bi-check-lg" aria-hidden="true"></i></span>
+        <h1 class="confirmacao-titulo">Pedido confirmado</h1>
+
+        <p class="confirmacao-texto">
+            Obrigado pela compra{% if nome %}, {{ nome }}{% endif %}!
+            Agradecemos a confiança na VOAD. Informamos que o seu pedido já está em fase de separação, recebendo todo o
+            cuidado e a dedicação necessários.
+        </p>
+        {% if cidade %}
+        <p class="text-secondary">Entrega em {{ cidade }}{% if estado %} - {{ estado }}{% endif %}.</p>
+        {% endif %}
+
+        <div class="resumo text-start">
+            <h2 class="resumo-titulo">O que você comprou</h2>
+            {% for linha in resumo %}
+            <div class="resumo-linha">
+                <div>
+                    <strong>{{ linha.nome }}</strong>
+                    <div class="text-secondary small">
+                        {% if linha.tamanho_nome %}Tamanho {{ linha.tamanho_nome }} · {% endif %}{{ linha.quantidade }}
+                        un.
+                    </div>
+                </div>
+                <span>R$ {{ linha.subtotal|floatformat:"2g" }}</span>
+            </div>
+            {% endfor %}
+
+            <div class="resumo-linha">
+                <span class="text-secondary">Pagamento</span>
+                {# mostra à vista ou o valor de cada parcela, conforme a escolha #}
+                <span>
+                    {% if pagamento.tipo == 'parcelado' %}
+                    {{ pagamento.numero }}x de R$ {{ pagamento.valor|floatformat:"2g" }} sem juros
+                    {% else %}
+                    À vista
+                    {% endif %}
+                </span>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center resumo-total">
+                <span>Total</span>
+                <strong>R$ {{ total|floatformat:"2g" }}</strong>
+            </div>
+        </div>
+
+        <p class="assinatura">Com carinho,<br><strong>Time VOAD</strong></p>
+
+        <a href="{% url 'home' %}" class="btn btn-voad btn-lg">Voltar para a loja</a>
+    </div>
+</section>
+{% endblock %}

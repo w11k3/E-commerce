@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}{{ nome_publico }}{% if categoria %} · {{ categoria.nome }}{% endif %} — VOAD{% endblock %}
+
+{% block content %}
+{# a mesma página serve os 4 departamentos: a view já manda os produtos filtrados #}
+<section class="container secao">
+    <h1 class="secao-titulo">{{ nome_publico }}{% if categoria %} · {{ categoria.nome }}{% endif %}</h1>
+
+    {# um link para cada categoria que existe neste departamento #}
+    <nav class="filtro-categorias" aria-label="Categorias">
+        <a href="{% url 'departamento' publico %}" class="{% if not categoria %}ativo{% endif %}">Todos</a>
+        {% for cat in categorias %}
+        <a href="{% url 'departamento_categoria' publico cat.slug %}" class="{% if categoria and categoria.id == cat.id %}ativo{% endif %}">{{ cat.nome }}</a>
+        {% endfor %}
+    </nav>
+
+    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3 g-lg-4">
+        {% for produto in produtos %}
+        <div class="col">
+            {% include "products/produto_card.html" %}
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <p class="vazio">Nenhum produto cadastrado nesta seção ainda.</p>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

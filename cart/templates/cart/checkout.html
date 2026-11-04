@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block title %}Finalizar pedido — VOAD{% endblock %}
+
+{% block content %}
+<section class="container secao">
+    <h1 class="secao-titulo">Finalizar pedido</h1>
+
+    {# um formulário só manda endereço e pagamento para a view finalizar_compra #}
+    <form method="post" action="{% url 'finalizar_compra' %}" class="row g-4 g-lg-5">
+        {% csrf_token %}
+
+        <div class="col-lg-7">
+            <div class="painel mb-4">
+                <h2 class="painel-titulo">Endereço de entrega</h2>
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label class="form-label" for="nome">Nome de quem recebe</label>
+                        <input type="text" class="form-control" id="nome" name="nome" required>
+                    </div>
+                    <div class="col-sm-5">
+                        <label class="form-label" for="cep">CEP</label>
+                        <input type="text" class="form-control" id="cep" name="cep" placeholder="00000-000" inputmode="numeric" maxlength="9" required>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label" for="rua">Rua ou avenida</label>
+                        <input type="text" class="form-control" id="rua" name="rua" required>
+                    </div>
+                    <div class="col-4">
+                        <label class="form-label" for="numero">Número</label>
+                        <input type="text" class="form-control" id="numero" name="numero" required>
+                    </div>
+                    <div class="col-8">
+                        <label class="form-label" for="bairro">Bairro</label>
+                        <input type="text" class="form-control" id="bairro" name="bairro" required>
+                    </div>
+                    <div class="col-8">
+                        <label class="form-label" for="cidade">Cidade</label>
+                        <input type="text" class="form-control" id="cidade" name="cidade" required>
+                    </div>
+                    <div class="col-4">
+                        <label class="form-label" for="estado">UF</label>
+                        <input type="text" class="form-control text-uppercase" id="estado" name="estado" maxlength="2" placeholder="MS" required>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label" for="complemento">Complemento <span class="text-secondary">(opcional)</span></label>
+                        <input type="text" class="form-control" id="complemento" name="complemento">
+                    </div>
+                </div>
+            </div>
+
+            <div class="painel">
+                <h2 class="painel-titulo">Pagamento</h2>
+
+                <div class="opcao-pagamento">
+                    <input class="form-check-input" type="radio" name="pagamento" id="avista" value="avista" checked>
+                    <label for="avista">
+                        <strong>À vista</strong>
+                        <span>R$ {{ total|floatformat:"2g" }} em uma parcela.</span>
+                    </label>
+                </div>
+
+                {# o parcelamento só aparece se pelo menos uma parcela ficar acima do valor mínimo #}
+                <div class="opcao-pagamento mt-3">
+                    {% if parcelas %}
+                    <input class="form-check-input" type="radio" name="pagamento" id="parcelado" value="parcelado">
+                    <label for="parcelado">
+                        <strong>Cartão de crédito parcelado</strong>
+                        <span>Sem juros. Parcela mínima de R$ {{ valor_minimo_parcela|floatformat:"2g" }}.</span>
+                    </label>
+                    <select name="parcelas" id="parcelas" class="form-select mt-3" aria-label="Número de parcelas" disabled>
+                        {# o for mostra quanto fica cada parcela (a view calculou o valor) #}
+                        {% for opcao in parcelas %}
+                        <option value="{{ opcao.numero }}">{{ opcao.numero }}x de R$ {{ opcao.valor|floatformat:"2g" }} sem juros</option>
+                        {% endfor %}
+                    </select>
+                    {% else %}
+                    <input class="form-check-input" type="radio" id="parcelado" disabled>
+                    <label for="parcelado">
+                        <strong>Cartão de crédito parcelado</strong>
+                        <span>Indisponível: a parcela ficaria abaixo de R$ {{ valor_minimo_parcela|floatformat:"2g" }}.</span>
+                    </label>
+                    {% endif %}
+                </div>
+
+                <p class="text-secondary small mt-3 mb-0">Projeto acadêmico: nenhuma cobrança é realizada.</p>
+            </div>
+        </div>
+
+        <aside class="col-lg-5">
+            <div class="resumo">
+                <h2 class="resumo-titulo">Resumo do pedido</h2>
+
+                {# uma linha para cada produto da compra #}
+                {% for linha in linhas %}
+                <div class="resumo-linha">
+                    <div>
+                        <strong>{{ linha.produto.nome }}</strong>
+                        <div class="text-secondary small">
+                            {% if linha.tamanho %}Tamanho {{ linha.tamanho.nome }} · {% endif %}{{ linha.quantidade }} un.
+                        </div>
+                    </div>
+                    <span>R$ {{ linha.subtotal|floatformat:"2g" }}</span>
+                </div>
+                {% endfor %}
+
+                <div class="d-flex justify-content-between align-items-center resumo-total">
+                    <span>Total</span>
+                    <strong>R$ {{ total|floatformat:"2g" }}</strong>
+                </div>
+
+                <button type="submit" class="btn btn-voad btn-lg w-100 mt-4">Confirmar pedido</button>
+                <a href="{% url 'carrinho' %}" class="btn btn-contorno w-100 mt-2">Voltar ao carrinho</a>
+            </div>
+        </aside>
+    </form>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // o seletor de parcelas só funciona quando "parcelado" está marcado
+    const parcelado = document.getElementById('parcelado');
+    const avista = document.getElementById('avista');
+    const parcelas = document.getElementById('parcelas');
+
+    // sem parcelas disponíveis, o select nem existe na página
+    if (parcelas) {
+        function atualizarParcelas() {
+            parcelas.disabled = !parcelado.checked;
+        }
+        parcelado.addEventListener('change', atualizarParcelas);
+        avista.addEventListener('change', atualizarParcelas);
+    }
+
+    // máscara do CEP: o traço entra sozinho
+    const cep = document.getElementById('cep');
+    cep.addEventListener('input', () => {
+        const numeros = cep.value.replace(/\D/g, '').slice(0, 8);
+        cep.value = numeros.length > 5 ? numeros.slice(0, 5) + '-' + numeros.slice(5) : numeros;
+    });
+</script>
+{% endblock %}

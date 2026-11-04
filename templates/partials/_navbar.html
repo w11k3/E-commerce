@@ -1,0 +1,139 @@
+
+<header class="voad-topo">
+    <div class="container">
+        <div class="topo-linha">
+
+            <!-- LOGO -->
+            <a href="{% url 'home' %}" class="voad-logo" aria-label="VOAD, página inicial">
+                VOAD<span>.</span>
+            </a>
+
+            <!-- DEPARTAMENTOS -->
+            <nav class="voad-links" aria-label="Departamentos">
+
+                <a href="{% url 'departamento' 'feminino' %}"
+                   class="{% if publico == 'feminino' %}ativo{% endif %}">
+                    Feminino
+                </a>
+
+                <a href="{% url 'departamento' 'masculino' %}"
+                   class="{% if publico == 'masculino' %}ativo{% endif %}">
+                    Masculino
+                </a>
+
+                <a href="{% url 'departamento' 'unissex' %}"
+                   class="{% if publico == 'unissex' %}ativo{% endif %}">
+                    Unissex
+                </a>
+
+                <a href="{% url 'departamento' 'infantil' %}"
+                   class="{% if publico == 'infantil' %}ativo{% endif %}">
+                    Infantil
+                </a>
+
+            </nav>
+
+            <div class="topo-divisor" aria-hidden="true"></div>
+
+            <!-- BARRA DE PESQUISA -->
+            <form
+                class="voad-busca"
+                role="search"
+                action="{% url 'busca' %}"
+                method="get"
+            >
+
+                <i class="bi bi-search" aria-hidden="true"></i>
+
+                <input
+                    type="search"
+                    name="search"
+                    value="{{ search|default:'' }}"
+                    placeholder="Buscar produtos..."
+                    aria-label="Buscar produtos"
+                >
+
+            </form>
+
+            <!-- AÇÕES -->
+            <div class="voad-acoes">
+
+                <!-- CARRINHO -->
+                <a
+                    href="{% url 'carrinho' %}"
+                    class="botao-icone"
+                    aria-label="Carrinho, {{ carrinho_quantidade }} item(ns)"
+                >
+                    <i class="bi bi-bag" aria-hidden="true"></i>
+
+                    {% if carrinho_quantidade %}
+                        <span class="contador">
+                            {{ carrinho_quantidade }}
+                        </span>
+                    {% endif %}
+                </a>
+
+                <!-- USUÁRIO LOGADO -->
+                {% if user.is_authenticated %}
+
+                    <div class="dropdown">
+
+                        <button
+                            class="botao-icone"
+                            type="button"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                            aria-label="Minha conta"
+                        >
+                            <i class="bi bi-person" aria-hidden="true"></i>
+                        </button>
+
+                        <ul class="dropdown-menu dropdown-menu-end">
+
+                            <li>
+                                <span class="dropdown-item-text small text-secondary">
+                                    {{ user.email }}
+                                </span>
+                            </li>
+
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+
+                            <li>
+                                <a class="dropdown-item" href="{% url 'carrinho' %}">
+                                    Meu carrinho
+                                </a>
+                            </li>
+
+                            <li>
+                                <form method="post" action="{% url 'logout' %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="dropdown-item">
+                                        Sair
+                                    </button>
+                                </form>
+                            </li>
+
+                        </ul>
+
+                    </div>
+
+                {% else %}
+
+                    <!-- USUÁRIO NÃO LOGADO -->
+                    <a href="{% url 'login' %}" class="btn btn-voad">
+                        Entrar
+                    </a>
+
+                    <a href="{% url 'cadastro' %}" class="btn btn-contorno">
+                        Criar conta
+                    </a>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+    </div>
+</header>

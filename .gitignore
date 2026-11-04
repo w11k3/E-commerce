@@ -1,0 +1,25 @@
+# Ambiente virtual
+.venv/
+
+# Cache do Python
+__pycache__/
+*.pyc
+
+# Banco de dados local
+db.sqlite3
+db.sqlite3-journal
+db_backup.sqlite3
+
+# Variáveis de ambiente (senhas, chaves)
+.env
+
+# Arquivos gerados pelo Django
+media/
+staticfiles/
+
+# Logs
+*.log
+
+# Editores
+.vscode/
+.idea/

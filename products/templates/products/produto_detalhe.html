@@ -1,0 +1,220 @@
+
+{% extends "base.html" %}
+
+{% block title %}{{ produto.nome }} — VOAD{% endblock %}
+
+{% block content %}
+
+<section class="container secao">
+
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb voad-breadcrumb">
+
+            <li class="breadcrumb-item">
+                <a href="{% url 'home' %}">Início</a>
+            </li>
+
+            <li class="breadcrumb-item">
+                <a href="{% url 'departamento' produto.genero %}">
+                    {{ produto.get_genero_display }}
+                </a>
+            </li>
+
+            <li class="breadcrumb-item">
+                <a href="{% url 'departamento_categoria' produto.genero produto.categoria.slug %}">
+                    {{ produto.categoria.nome }}
+                </a>
+            </li>
+
+            <li class="breadcrumb-item active" aria-current="page">
+                {{ produto.nome }}
+            </li>
+
+        </ol>
+    </nav>
+
+    <div class="row g-4 g-lg-5">
+
+        <!-- IMAGEM DO PRODUTO -->
+        <div class="col-md-6">
+
+            <div class="detalhe-foto">
+
+                {% if produto.imagem %}
+                    <img src="{{ produto.imagem.url }}" alt="{{ produto.nome }}">
+                {% else %}
+                    <span class="sem-foto sem-foto-grande">
+                        VOAD<span>.</span>
+                    </span>
+                {% endif %}
+
+                {% if produto.em_promocao %}
+                    <span class="selo-promo">
+                        -{{ produto.desconto_percentual }}%
+                    </span>
+                {% endif %}
+
+            </div>
+
+        </div>
+
+        <!-- INFORMAÇÕES DO PRODUTO -->
+        <div class="col-md-6">
+
+            <p class="produto-tipo">
+                {{ produto.get_genero_display }} · {{ produto.categoria.nome }}
+            </p>
+
+            <h1 class="detalhe-nome">
+                {{ produto.nome }}
+            </h1>
+
+            <!-- PREÇOS -->
+            <p class="detalhe-precos">
+
+                {% if produto.em_promocao %}
+
+                    <s class="preco-antigo">
+                        R$ {{ produto.preco|floatformat:"2g" }}
+                    </s>
+
+                    <span class="preco-promo">
+                        R$ {{ produto.preco_promocional|floatformat:"2g" }}
+                    </span>
+
+                {% else %}
+
+                    <span class="preco-atual">
+                        R$ {{ produto.preco|floatformat:"2g" }}
+                    </span>
+
+                {% endif %}
+
+            </p>
+
+            <!-- DESCRIÇÃO -->
+            {% if produto.descricao %}
+                <p class="detalhe-descricao">
+                    {{ produto.descricao|linebreaksbr }}
+                </p>
+            {% endif %}
+
+            <!-- FORMULÁRIO DE COMPRA -->
+            <form method="post" action="{% url 'adicionar_carrinho' produto.id %}" class="mt-4">
+
+                {% csrf_token %}
+
+                <!-- TAMANHOS -->
+                {% if produto.tamanhos.all %}
+
+                    <fieldset class="mb-4">
+
+                        <legend class="campo-rotulo">
+                            Tamanho
+                        </legend>
+
+                        <div class="d-flex flex-wrap gap-2">
+
+                            {% for tamanho in produto.tamanhos.all %}
+
+                                <input
+                                    type="radio"
+                                    class="btn-check"
+                                    name="tamanho"
+                                    id="tamanho{{ tamanho.id }}"
+                                    value="{{ tamanho.id }}"
+                                    required
+                                >
+
+                                <label class="btn btn-tamanho" for="tamanho{{ tamanho.id }}">
+                                    {{ tamanho.nome }}
+                                </label>
+
+                            {% endfor %}
+
+                        </div>
+
+                    </fieldset>
+
+                {% endif %}
+
+                <!-- QUANTIDADE -->
+                <div class="mb-4">
+
+                    <label class="campo-rotulo" for="quantidade">
+                        Quantidade
+                    </label>
+
+                    <input
+                        type="number"
+                        class="form-control campo-quantidade"
+                        id="quantidade"
+                        name="quantidade"
+                        value="1"
+                        min="1"
+                        max="{{ produto.estoque }}"
+                        required
+                    >
+
+                    {% if produto.estoque <= 5 %}
+
+                        <small class="aviso-estoque">
+                            Restam {{ produto.estoque }} unidade(s).
+                        </small>
+
+                    {% endif %}
+
+                </div>
+
+                <!-- BOTÕES -->
+                <div class="d-grid gap-2 d-sm-flex">
+
+                    <button type="submit" class="btn btn-voad btn-lg flex-fill">
+                        Adicionar ao carrinho
+                    </button>
+
+                    <button
+                        type="submit"
+                        formaction="{% url 'comprar_agora' produto.id %}"
+                        class="btn btn-contorno btn-lg flex-fill"
+                    >
+                        Comprar agora
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- PRODUTOS RELACIONADOS -->
+{% if relacionados %}
+
+    <section class="container secao pt-0">
+
+        <h2 class="secao-titulo">
+            Mais desta categoria
+        </h2>
+
+        <div class="row row-cols-2 row-cols-md-4 g-3 g-lg-4">
+
+            {% for produto in relacionados %}
+
+                <div class="col">
+                    {% include "products/produto_card.html" %}
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+{% endif %}
+
+{% endblock %}

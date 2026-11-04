@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}Carrinho — VOAD{% endblock %}
+
+{% block content %}
+<section class="container secao">
+    <h1 class="secao-titulo">Carrinho</h1>
+
+    {% if itens %}
+    <div class="row g-4 g-lg-5">
+        <div class="col-lg-8">
+            {# uma linha para cada item que está no carrinho #}
+            {% for item in itens %}
+            <article class="item-carrinho">
+                <a href="{{ item.produto.get_absolute_url }}" class="item-foto">
+                    {% if item.produto.imagem %}
+                    <img src="{{ item.produto.imagem.url }}" alt="{{ item.produto.nome }}">
+                    {% else %}
+                    <span class="sem-foto">V<span>.</span></span>
+                    {% endif %}
+                </a>
+
+                <div class="item-info">
+                    <p class="produto-tipo mb-1">{{ item.produto.categoria.nome }}</p>
+                    <h2 class="item-nome"><a href="{{ item.produto.get_absolute_url }}">{{ item.produto.nome }}</a></h2>
+                    {% if item.tamanho %}<p class="text-secondary small mb-1">Tamanho: {{ item.tamanho.nome }}</p>{% endif %}
+                    <p class="mb-2">R$ {{ item.produto.preco_atual|floatformat:"2g" }}</p>
+
+                    {% if item.sem_estoque %}
+                    <p class="aviso-estoque mb-2">Estoque insuficiente: restam {{ item.produto.estoque }}. Diminua a quantidade ou remova o item.</p>
+                    {% endif %}
+
+                    <div class="d-flex align-items-center gap-2">
+                        {# cada botão é um formulário POST, porque alterar o carrinho é uma ação (não um link) #}
+                        <form method="post" action="{% url 'alterar_quantidade' item.id 'diminuir' %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-contorno btn-sm" aria-label="Diminuir quantidade">−</button>
+                        </form>
+                        <span class="px-2">{{ item.quantidade }}</span>
+                        <form method="post" action="{% url 'alterar_quantidade' item.id 'aumentar' %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-contorno btn-sm" aria-label="Aumentar quantidade">+</button>
+                        </form>
+
+                        <form method="post" action="{% url 'remover_carrinho' item.id %}" class="ms-auto" onsubmit="return confirm('Remover este produto do carrinho?');">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-link btn-sm link-remover">Remover</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="item-subtotal">
+                    <small class="text-secondary">Subtotal</small>
+                    <strong>R$ {{ item.subtotal|floatformat:"2g" }}</strong>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+
+        <aside class="col-lg-4">
+            <div class="resumo">
+                <h2 class="resumo-titulo">Resumo</h2>
+                <div class="d-flex justify-content-between mb-2"><span class="text-secondary">Itens</span><span>{{ itens|length }}</span></div>
+                <div class="d-flex justify-content-between mb-3"><span class="text-secondary">Entrega</span><span>A combinar</span></div>
+                <div class="d-flex justify-content-between align-items-center resumo-total">
+                    <span>Total</span>
+                    <strong>R$ {{ total|floatformat:"2g" }}</strong>
+                </div>
+                {# se algum item passa do estoque, o botão de finalizar fica desativado #}
+                {% if tem_problema %}
+                <button type="button" class="btn btn-voad btn-lg w-100 mt-4" disabled>Ajuste os itens para continuar</button>
+                {% else %}
+                <a href="{% url 'checkout' %}" class="btn btn-voad btn-lg w-100 mt-4">Finalizar compra</a>
+                {% endif %}
+                <a href="{% url 'home' %}" class="btn btn-contorno w-100 mt-2">Continuar comprando</a>
+            </div>
+        </aside>
+    </div>
+    {% else %}
+    <div class="vazio">
+        <p class="mb-3">Seu carrinho está vazio.</p>
+        <a href="{% url 'home' %}" class="btn btn-voad">Ver produtos</a>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}

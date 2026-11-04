@@ -1,0 +1,90 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0b0b0a">
+    <title>Criar conta — VOAD</title>
+
+    <link rel="stylesheet" href="{% static 'accounts/css/autenticacao.css' %}">
+    <script src="{% static 'accounts/js/autenticacao.js' %}" defer></script>
+</head>
+<body>
+    <main class="pagina-auth">
+        <section class="auth-visual">
+            <a href="{% url 'home' %}" class="auth-logo" aria-label="Voltar à página inicial">
+                VOAD<span>.</span>
+            </a>
+
+            <div class="auth-chamada">
+                <span class="auth-numero">002 / FAÇA PARTE</span>
+                <h1>Vista sua<br><span>identidade.</span></h1>
+                <p>Crie sua conta e encontre peças que combinam com seu estilo.</p>
+            </div>
+
+            <p class="auth-rodape">ESTILO • ATITUDE • VOAD</p>
+        </section>
+
+        <section class="auth-conteudo">
+            <div class="auth-formulario">
+                <a href="{% url 'home' %}" class="auth-voltar">
+                    <span aria-hidden="true">←</span> Voltar ao início
+                </a>
+
+                <h2>Crie sua conta.</h2>
+                <p class="auth-intro">Preencha os dados abaixo para fazer parte da VOAD.</p>
+
+                <form method="post" action="{% url 'cadastro' %}">
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                        <div class="auth-erros-gerais" role="alert">
+                            {% for erro in form.non_field_errors %}
+                                <p>{{ erro }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    {% for campo in form %}
+                        <div class="auth-campo">
+                            <label for="{{ campo.id_for_label }}">{{ campo.label }}</label>
+
+                            {% if campo.name == "password1" or campo.name == "password2" %}
+                                <div class="auth-senha">
+                                    {{ campo }}
+                                    <button
+                                        type="button"
+                                        class="auth-mostrar-senha"
+                                        aria-controls="{{ campo.id_for_label }}"
+                                        aria-pressed="false"
+                                    >Mostrar</button>
+                                </div>
+                            {% else %}
+                                {{ campo }}
+                            {% endif %}
+
+                            {% if campo.help_text %}
+                                <div class="auth-ajuda">{{ campo.help_text|safe }}</div>
+                            {% endif %}
+
+                            {% for erro in campo.errors %}
+                                <p class="auth-erro">{{ erro }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+
+                    <button type="submit" class="auth-botao">
+                        Criar minha conta <span aria-hidden="true">↗</span>
+                    </button>
+                </form>
+
+                <p class="auth-alternativa">
+                    Já tem uma conta?
+                    <a href="{% url 'login' %}">Entrar</a>
+                </p>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

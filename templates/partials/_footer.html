@@ -1,0 +1,29 @@
+<footer class="voad-rodape">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-5">
+                <a href="{% url 'home' %}" class="voad-logo">VOAD<span>.</span></a>
+                <p class="text-secondary mt-3 mb-0">Roupas para todos os dias.</p>
+            </div>
+            <div class="col-6 col-md-3">
+                <h2 class="rodape-titulo">Departamentos</h2>
+                <ul class="list-unstyled mb-0">
+                    <li><a href="{% url 'departamento' 'feminino' %}">Feminino</a></li>
+                    <li><a href="{% url 'departamento' 'masculino' %}">Masculino</a></li>
+                    <li><a href="{% url 'departamento' 'unissex' %}">Unissex</a></li>
+                    <li><a href="{% url 'departamento' 'infantil' %}">Infantil</a></li>
+                </ul>
+            </div>
+            <div class="col-6 col-md-4">
+                <h2 class="rodape-titulo">Contato</h2>
+                <ul class="list-unstyled mb-0">
+                    <li>@voad.oficial</li>
+                    <li>contato@voad.com.br</li>
+                    <li>(11) 99999-0000</li>
+                </ul>
+            </div>
+        </div>
+        {# now "Y" mostra o ano atual #}
+        <p class="rodape-copy">&copy; {% now "Y" %} VOAD. Projeto acadêmico, loja fictícia.</p>
+    </div>
+</footer>

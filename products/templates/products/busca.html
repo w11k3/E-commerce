@@ -1,0 +1,88 @@
+
+{% extends "base.html" %}
+
+{% block title %}Busca — VOAD{% endblock %}
+
+{% block content %}
+
+<section class="container secao">
+
+    <h1 class="secao-titulo">
+        {% if search %}
+            Resultados para “{{ search }}”
+        {% else %}
+            Buscar produtos
+        {% endif %}
+    </h1>
+
+    <!-- FILTROS POR GÊNERO -->
+    <div class="d-flex flex-wrap gap-2 mb-4">
+
+        <a
+            href="{% url 'busca' %}{% if search %}?search={{ search|urlencode }}{% endif %}"
+            class="btn btn-outline-light {% if not filtro_genero %}active{% endif %}"
+        >
+            Todos
+        </a>
+
+        <a
+            href="{% url 'busca' %}?masculino{% if search %}&search={{ search|urlencode }}{% endif %}"
+            class="btn btn-outline-light {% if filtro_genero == 'masculino' %}active{% endif %}"
+        >
+            Masculino
+        </a>
+
+        <a
+            href="{% url 'busca' %}?feminino{% if search %}&search={{ search|urlencode }}{% endif %}"
+            class="btn btn-outline-light {% if filtro_genero == 'feminino' %}active{% endif %}"
+        >
+            Feminino
+        </a>
+
+        <a
+            href="{% url 'busca' %}?unisex{% if search %}&search={{ search|urlencode }}{% endif %}"
+            class="btn btn-outline-light {% if filtro_genero == 'unisex' %}active{% endif %}"
+        >
+            Unissex
+        </a>
+
+        <a
+            href="{% url 'busca' %}?infantil{% if search %}&search={{ search|urlencode }}{% endif %}"
+            class="btn btn-outline-light {% if filtro_genero == 'infantil' %}active{% endif %}"
+        >
+            Infantil
+        </a>
+
+    </div>
+
+    <!-- RESULTADOS -->
+    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3 g-lg-4">
+
+        {% for produto in produtos %}
+
+            <div class="col">
+                {% include "products/produto_card.html" %}
+            </div>
+
+        {% empty %}
+
+            <div class="col-12">
+                <p class="vazio">
+
+                    {% if search %}
+                        Nenhum produto encontrado para “{{ search }}”.
+                        Tente outra palavra.
+                    {% else %}
+                        Nenhum produto encontrado neste filtro.
+                    {% endif %}
+
+                </p>
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+{% endblock %}

@@ -1,0 +1,40 @@
+{% comment %}
+  card de produto, usado com include nas outras páginas.
+  precisa de uma variável chamada produto (vem do for da página).
+  o html do card existe só aqui: home, departamento, busca e
+  "mais desta categoria" reaproveitam este arquivo.
+{% endcomment %}
+<article class="produto-card {% if not produto.disponivel %}esgotado{% endif %}">
+    {# produto esgotado ganha a classe bloqueado (sem clique, veja o css) #}
+    <a href="{{ produto.get_absolute_url }}" class="produto-foto {% if not produto.disponivel %}bloqueado{% endif %}" aria-label="{{ produto.nome }}">
+        {# o if evita erro quando o produto não tem imagem #}
+        {% if produto.imagem %}
+        <img src="{{ produto.imagem.url }}" alt="{{ produto.nome }}" loading="lazy">
+        {% else %}
+        <span class="sem-foto">VOAD<span>.</span></span>
+        {% endif %}
+
+        {% if not produto.disponivel %}
+        <span class="etiqueta-esgotado">Esgotado</span>
+        {% elif produto.em_promocao %}
+        <span class="selo-promo">-{{ produto.desconto_percentual }}%</span>
+        {% endif %}
+    </a>
+
+    <div class="produto-info">
+        <p class="produto-tipo">{{ produto.get_publico_display }} · {{ produto.categoria.nome }}</p>
+        <h3 class="produto-nome">
+            <a href="{{ produto.get_absolute_url }}" class="{% if not produto.disponivel %}bloqueado{% endif %}">{{ produto.nome }}</a>
+        </h3>
+
+        {# em promoção: preço normal riscado e preço promocional #}
+        <p class="produto-precos">
+            {% if produto.em_promocao %}
+            <s class="preco-antigo">R$ {{ produto.preco|floatformat:"2g" }}</s>
+            <span class="preco-promo">R$ {{ produto.preco_promocional|floatformat:"2g" }}</span>
+            {% else %}
+            <span class="preco-atual">R$ {{ produto.preco|floatformat:"2g" }}</span>
+            {% endif %}
+        </p>
+    </div>
+</article>

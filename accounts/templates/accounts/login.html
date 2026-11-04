@@ -1,0 +1,109 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0b0b0a">
+    <title>Entrar — VOAD</title>
+
+    <link rel="stylesheet" href="{% static 'accounts/css/autenticacao.css' %}">
+    <script src="{% static 'accounts/js/autenticacao.js' %}" defer></script>
+</head>
+<body>
+    <main class="pagina-auth">
+        <section class="auth-visual">
+            <a href="{% url 'home' %}" class="auth-logo" aria-label="Voltar à página inicial">
+                VOAD<span>.</span>
+            </a>
+
+            <div class="auth-chamada">
+                <span class="auth-numero">001 / SUA IDENTIDADE</span>
+                <h1>Seu estilo.<br><span>Suas regras.</span></h1>
+                <p>Entre na sua conta e continue explorando o universo VOAD.</p>
+            </div>
+
+            <p class="auth-rodape">ESTILO • ATITUDE • VOAD</p>
+        </section>
+
+        <section class="auth-conteudo">
+            <div class="auth-formulario">
+                <a href="{% url 'home' %}" class="auth-voltar">
+                    <span aria-hidden="true">←</span> Voltar ao início
+                </a>
+
+                <h2>Bem-vindo de volta.</h2>
+                <p class="auth-intro">Entre com os dados da sua conta para continuar.</p>
+
+                <form method="post" action="{% url 'login' %}">
+                    {% csrf_token %}
+
+                    {% if next %}
+                        <input type="hidden" name="next" value="{{ next }}">
+                    {% endif %}
+
+                    {% if form.non_field_errors %}
+                        <div class="auth-erros-gerais" role="alert">
+                            {% for erro in form.non_field_errors %}
+                                <p>{{ erro }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <div class="auth-campo">
+                        <label for="id_username">E-mail</label>
+                        <!-- O Django LoginView recebe o identificador pelo campo username. -->
+                        <input
+                            type="email"
+                            name="username"
+                            id="id_username"
+                            placeholder="seuemail@exemplo.com"
+                            value="{{ form.username.value|default_if_none:'' }}"
+                            autocomplete="email"
+                            required
+                            autofocus
+                        >
+
+                        {% for erro in form.username.errors %}
+                            <p class="auth-erro">{{ erro }}</p>
+                        {% endfor %}
+                    </div>
+
+                    <div class="auth-campo">
+                        <label for="id_password">Senha</label>
+                        <div class="auth-senha">
+                            <input
+                                type="password"
+                                name="password"
+                                id="id_password"
+                                placeholder="Digite sua senha"
+                                autocomplete="current-password"
+                                required
+                            >
+                            <button
+                                type="button"
+                                class="auth-mostrar-senha"
+                                aria-controls="id_password"
+                                aria-pressed="false"
+                            >Mostrar</button>
+                        </div>
+
+                        {% for erro in form.password.errors %}
+                            <p class="auth-erro">{{ erro }}</p>
+                        {% endfor %}
+                    </div>
+
+                    <button type="submit" class="auth-botao">
+                        Entrar na minha conta <span aria-hidden="true">↗</span>
+                    </button>
+                </form>
+
+                <p class="auth-alternativa">
+                    Ainda não tem uma conta?
+                    <a href="{% url 'cadastro' %}">Cadastre-se</a>
+                </p>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

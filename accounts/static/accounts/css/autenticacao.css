@@ -1,0 +1,419 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=DM+Sans:wght@400;500;600;700&display=swap');
+
+:root {
+    --preto: #0b0b0a;
+    --painel: #141412;
+    --amarelo: #f2c400;
+    --branco: #f5f4ef;
+    --cinza: #aaa9a2;
+    --borda: rgba(255, 255, 255, 0.15);
+    --fonte-titulo: 'Barlow Condensed', Impact, sans-serif;
+    --fonte-texto: 'DM Sans', Arial, sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-width: 320px;
+    min-height: 100vh;
+    background: var(--preto);
+    color: var(--branco);
+    font-family: var(--fonte-texto);
+    -webkit-font-smoothing: antialiased;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+button,
+input {
+    font: inherit;
+}
+
+.pagina-auth {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(420px, 0.85fr);
+    min-height: 100vh;
+}
+
+/* O painel visual reforça a marca sem competir com o formulário. */
+.auth-visual {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 100vh;
+    padding: 38px 8%;
+    overflow: hidden;
+    background-image:
+        linear-gradient(0deg, rgba(5, 5, 4, 0.96), rgba(5, 5, 4, 0.2)),
+        url("../images/voad-hero.jpg");
+    background-position: center;
+    background-size: cover;
+}
+
+.auth-visual::after {
+    position: absolute;
+    inset: 0;
+    border-right: 1px solid var(--borda);
+    content: "";
+    pointer-events: none;
+}
+
+.auth-visual > * {
+    position: relative;
+    z-index: 1;
+}
+
+.auth-logo {
+    width: fit-content;
+    font-family: var(--fonte-titulo);
+    font-size: 42px;
+    font-weight: 900;
+    letter-spacing: -2px;
+}
+
+.auth-logo span {
+    color: var(--amarelo);
+}
+
+.auth-chamada {
+    max-width: 520px;
+    padding: 50px 0;
+}
+
+.auth-numero {
+    display: inline-block;
+    margin-bottom: 22px;
+    color: var(--amarelo);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+}
+
+.auth-chamada h1 {
+    font-family: var(--fonte-titulo);
+    font-size: clamp(54px, 6vw, 88px);
+    font-weight: 900;
+    line-height: 0.94;
+    text-transform: uppercase;
+}
+
+.auth-chamada h1 span {
+    color: var(--amarelo);
+}
+
+.auth-chamada p {
+    max-width: 360px;
+    margin-top: 24px;
+    color: #d0cfc8;
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+.auth-rodape {
+    color: #d0cfc8;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 2px;
+}
+
+.auth-conteudo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 56px 9%;
+    background: var(--preto);
+}
+
+.auth-formulario {
+    width: 100%;
+    max-width: 430px;
+}
+
+.auth-voltar {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 42px;
+    color: var(--cinza);
+    font-size: 12px;
+    transition: color 0.2s ease;
+}
+
+.auth-voltar:hover {
+    color: var(--amarelo);
+}
+
+.auth-formulario h2 {
+    font-family: var(--fonte-titulo);
+    font-size: 46px;
+    font-weight: 800;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+.auth-intro {
+    margin-top: 12px;
+    margin-bottom: 30px;
+    color: var(--cinza);
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+.auth-campo {
+    margin-bottom: 18px;
+}
+
+.auth-campo label {
+    display: block;
+    margin-bottom: 9px;
+    color: #e7e6df;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.auth-campo input {
+    display: block;
+    width: 100%;
+    min-height: 49px;
+    padding: 13px 14px;
+    border: 1px solid var(--borda);
+    border-radius: 2px;
+    outline: none;
+    background: #111110;
+    color: var(--branco);
+    font-size: 14px;
+    transition: border-color 0.2s ease;
+}
+
+.auth-campo input:focus {
+    border-color: var(--amarelo);
+}
+
+.auth-campo input::placeholder {
+    color: #77766f;
+}
+
+.auth-campo input:focus-visible,
+.auth-botao:focus-visible,
+.auth-voltar:focus-visible,
+.auth-alternativa a:focus-visible {
+    outline: 2px solid var(--amarelo);
+    outline-offset: 3px;
+}
+
+.auth-ajuda {
+    margin-top: 8px;
+    color: var(--cinza);
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+.auth-ajuda ul {
+    padding-left: 18px;
+}
+
+.auth-erro {
+    margin-top: 8px;
+    color: #ff8f85;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.auth-erros-gerais {
+    margin-bottom: 18px;
+    padding: 13px 15px;
+    border: 1px solid rgba(255, 143, 133, 0.35);
+    background: rgba(255, 143, 133, 0.07);
+    color: #ffaaa2;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.auth-senha {
+    position: relative;
+}
+
+.auth-senha input {
+    padding-right: 78px;
+}
+
+.auth-mostrar-senha {
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    padding: 5px 0;
+    transform: translateY(-50%);
+    border: 0;
+    background: transparent;
+    color: var(--amarelo);
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.auth-botao {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 51px;
+    margin-top: 25px;
+    padding: 14px 18px;
+    border: 0;
+    border-radius: 2px;
+    background: var(--amarelo);
+    color: var(--preto);
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.auth-botao:hover {
+    transform: translateY(-1px);
+    background: #ffda22;
+}
+
+.auth-alternativa {
+    margin-top: 24px;
+    color: var(--cinza);
+    font-size: 12px;
+    line-height: 1.8;
+    text-align: center;
+}
+
+.auth-alternativa a {
+    color: var(--amarelo);
+    font-weight: 700;
+}
+
+.auth-alternativa a:hover {
+    text-decoration: underline;
+}
+
+/* CELULAR: escondemos a imagem lateral para priorizar o formulário. */
+@media (max-width: 700px) {
+    .pagina-auth {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
+
+    .auth-visual {
+        min-height: auto;
+        padding: 22px 6%;
+        background-position: center 40%;
+    }
+
+    .auth-visual::after {
+        border-right: 0;
+        border-bottom: 1px solid var(--borda);
+    }
+
+    .auth-logo {
+        font-size: 35px;
+    }
+
+    .auth-chamada {
+        padding: 35px 0 22px;
+    }
+
+    .auth-numero {
+        margin-bottom: 13px;
+        font-size: 9px;
+    }
+
+    .auth-chamada h1 {
+        font-size: clamp(43px, 12vw, 61px);
+    }
+
+    .auth-chamada p {
+        margin-top: 14px;
+        font-size: 12px;
+    }
+
+    .auth-rodape {
+        padding-top: 10px;
+        font-size: 9px;
+    }
+
+    .auth-conteudo {
+        align-items: flex-start;
+        padding: 30px 6% 42px;
+    }
+
+    .auth-formulario {
+        max-width: 480px;
+        margin: 0 auto;
+    }
+
+    .auth-voltar {
+        margin-bottom: 28px;
+    }
+
+    .auth-formulario h2 {
+        font-size: 40px;
+    }
+
+    .auth-intro {
+        margin-bottom: 24px;
+    }
+
+    .auth-campo {
+        margin-bottom: 16px;
+    }
+
+    .auth-campo input {
+        min-height: 50px;
+        font-size: 16px;
+    }
+
+    .auth-botao {
+        min-height: 52px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        transition-duration: 0.01ms !important;
+    }
+}
+
+
+/* Padroniza os campos criados automaticamente pelo Django no cadastro. */
+.auth-campo input[type="text"],
+.auth-campo input[type="email"],
+.auth-campo input[type="password"] {
+    width: 100%;
+    min-height: 49px;
+    padding: 13px 14px;
+    border: 1px solid var(--borda);
+    border-radius: 2px;
+    outline: none;
+    background: #111110;
+    color: var(--branco);
+    font-size: 14px;
+}
+
+.auth-campo input:focus {
+    border-color: var(--amarelo);
+}
+
+@media (max-width: 700px) {
+    .auth-campo input[type="text"],
+    .auth-campo input[type="email"],
+    .auth-campo input[type="password"] {
+        min-height: 50px;
+        font-size: 16px;
+    }
+}
